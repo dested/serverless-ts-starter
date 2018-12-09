@@ -1,0 +1,37 @@
+service: ts-starter
+
+plugins:
+  - serverless-webpack
+  - serverless-domain-manager
+  - serverless-offline
+
+custom:
+  webpack:
+    webpackConfig: 'webpack.config.js'
+    includeModules: true
+    packager: 'npm'
+  customDomain:
+    domainName: api.somedomain.com
+    basePath: ''
+    stage: ${self:provider.stage}
+    createRoute53Record: true
+  serverless-offline:
+    host: 0.0.0.0
+    port: 3002
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: dev
+  region: us-west-2
+  environment:
+    shoes: 'just env variables, nothing special'
+
+functions:
+  register:
+    handler: handler.user_register
+    events:
+      - http:
+          path: user/register
+          method: POST
+          cors: true
